@@ -1,0 +1,1 @@
+python data/bump2normal.py data/head/bump-lowRes.png 5 data/head/normal-lowRes2.png

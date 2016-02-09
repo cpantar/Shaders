@@ -1,0 +1,69 @@
+//Compute tangent and biTangent
+        var tangent =[];
+        var biTangent = [];
+            for( var i = 0; i < mesh.faceVertexIndices.positions.length; ++i )
+            {
+                var fvi = mesh.faceVertexIndices.positions[i];
+
+                //subtract the vertex positions p1-p0
+                var edge1 = sub( mesh.vertex.positions[ fvi[1] ], mesh.vertex.positions[ fvi[0] ] );
+                //subtract vertex positions p2-p0
+                var edge2 = sub( mesh.vertex.positions[ fvi[2] ], mesh.vertex.positions[ fvi[0] ] );
+
+
+                var fuv = mesh.faceVertexIndices.texCoords[i];
+                //subtract uv positions uv1-uv0
+                var edge1uv = sub( mesh.vertex.texCoords[ fuv[1] ], mesh.vertex.texCoords[ fuv[0] ] );
+                //subtract uv positions uv2-uv0
+                var edge2uv = sub( mesh.vertex.texCoords[ fuv[2] ], mesh.vertex.texCoords[ fuv[0] ] );
+
+            
+
+                var midTangent1 = [];
+                var midTangent2 = [];
+                //to compute the tangent here I multiply I have divided the computations into 2 parts, to suit javaScript, //using vec3 and vec2 was throwing errors!
+
+                //(Edge1 * -Edge2uv.y + Edge2 * Edge1uv.y)
+
+                midTangent1[0] = (edge1[0] * -edge2uv[1]);
+                midTangent1[1] = (edge1[1] * -edge2uv[1]);
+                midTangent1[2] = (edge1[2] * -edge2uv[1]);
+
+                //(Edge1 * -Edge2uv.y + Edge2 * Edge1uv.y)
+                midTangent2[0] = (edge2[0]*edge1uv[1]);
+                midTangent2[1] = (edge2[1]*edge1uv[1]);
+                midTangent2[2] = (edge2[2]*edge1uv[1]);
+
+                
+                 for( var vi = 0; vi < fvi.length; ++vi ){
+                  // this is what im doing here :: tangent   = (Edge1 * -Edge2uv.y + Edge2 * Edge1uv.y)
+                  //here is what i dont understand, how do I store the values of all the tangents? till where do I run the //loop? I dont understand whats going on!
+                  // and shoudnt tangent be an array of arrays? each array storing 3 values and repeating for the entire mesh?
+                tangent[ fvi[ vi ]] = add(midTangent1,midTangent2);
+                }
+
+
+//this part is similar to the above except i do it to compute the biTangent
+                var midbiTangent1 = [];
+                var midbiTangent2 = [];
+
+                midbiTangent1[0] = (edge1[0] * -edge2uv[0]);
+                midbiTangent1[1] = (edge1[1] * -edge2uv[0]);
+                midbiTangent1[2] = (edge1[2] * -edge2uv[0]);
+
+                midbiTangent2[0] = (edge2[0]*edge1uv[0]);
+                midbiTangent2[1] = (edge2[1]*edge1uv[0]);
+                midbiTangent2[2] = (edge2[2]*edge1uv[0]);
+
+                  for( var uv = 0; uv < fuv.length; ++uv ){
+                biTangent[ fuv[ uv ]] = add(midbiTangent1,midbiTangent2);
+                }
+               // var biTangent = (edge1 * -edge2uv[0] + edge2 * edge1uv[0]);
+               for( var i = 0; i < tangent.length; ++i )
+             {
+                tangent[i] = normalized(tangent[i]);
+            }
+             for( var i = 0; i < biTangent.length; ++i )
+             {
+                biTangent[i] = normalized(biTangent[i]);
+            }

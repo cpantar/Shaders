@@ -1,0 +1,56 @@
+ var tangent =[];
+        var biTangent = [];
+            for( var i = 0; i < mesh.faceVertexIndices.positions.length; ++i )
+            {
+                var fvi = mesh.faceVertexIndices.positions[i];
+                var edge1 = sub( mesh.vertex.positions[ fvi[1] ], mesh.vertex.positions[ fvi[0] ] );
+                var edge2 = sub( mesh.vertex.positions[ fvi[2] ], mesh.vertex.positions[ fvi[0] ] );
+
+                var fuv = mesh.faceVertexIndices.texCoords[i];
+                var edge1uv = sub( mesh.vertex.texCoords[ fuv[1] ], mesh.vertex.texCoords[ fuv[0] ] );
+                var edge2uv = sub( mesh.vertex.texCoords[ fuv[2] ], mesh.vertex.texCoords[ fuv[0] ] );
+
+            
+
+                var midTangent1 = [];
+                var midTangent2 = [];
+                midTangent1[0] = (edge1[0] * -edge2uv[1]);
+                midTangent1[1] = (edge1[1] * -edge2uv[1]);
+                midTangent1[2] = (edge1[2] * -edge2uv[1]);
+
+                midTangent2[0] = (edge2[0]*edge1uv[1]);
+                midTangent2[1] = (edge2[1]*edge1uv[1]);
+                midTangent2[2] = (edge2[2]*edge1uv[1]);
+
+                
+                 for( var vi = 0; vi < fvi.length; ++vi ){
+                tangent[ fvi[ vi ]] = add(midTangent1,midTangent2);
+                }
+
+                var midbiTangent1 = [];
+                var midbiTangent2 = [];
+
+                midbiTangent1[0] = (edge1[0] * -edge2uv[0]);
+                midbiTangent1[1] = (edge1[1] * -edge2uv[0]);
+                midbiTangent1[2] = (edge1[2] * -edge2uv[0]);
+
+                midbiTangent2[0] = (edge2[0]*edge1uv[0]);
+                midbiTangent2[1] = (edge2[1]*edge1uv[0]);
+                midbiTangent2[2] = (edge2[2]*edge1uv[0]);
+
+                  for( var uv = 0; uv < fuv.length; ++uv ){
+                biTangent[fuv[uv]] = add(midbiTangent1,midbiTangent2);
+                }
+               // var biTangent = (edge1 * -edge2uv[0] + edge2 * edge1uv[0]);
+               for( var i = 0; i < tangent.length; ++i )
+             {
+                tangent[i] = normalized(tangent[i]);
+            }
+             for( var i = 0; i < biTangent.length; ++i )
+             {
+                biTangent[i] = normalized(biTangent[i]);
+            }
+                //biTangent = normalized(biTangent);
+
+
+            }
